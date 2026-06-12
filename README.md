@@ -3,7 +3,7 @@
 Automated tactical threat ingestion and geospatial link analysis framework optimized for tactical policing operations.
 
 **🌐 Live Catalyst Platform Endpoint:**
-`https://kavach-backend-50043034824.development.catalystappsail.in`
+`https://ksp-kavach-60073902446.development.catalystserverless.in`
 
 ---
 
