@@ -1,0 +1,130 @@
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------------------------
+  # 1. Relational Engine: Authentication, User Scope, & Dynamic Audit Logging
+  # ---------------------------------------------------------------------------
+  ksp-postgres:
+    image: postgres:16-alpine
+    container_name: ksp-postgres-sandbox
+    environment:
+      POSTGRES_USER: ksp_admin
+      POSTGRES_PASSWORD: SecretKavachPassword2026_Secure
+      POSTGRES_DB: ksp_kavach_core
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ksp-secure-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ksp_admin -d ksp_kavach_core"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # 2. Relational Graph Engine: Suspect Association & Multihop Traversal Lines
+  # ---------------------------------------------------------------------------
+  ksp-neo4j:
+    image: neo4j:5.18.0-community
+    container_name: ksp-neo4j-sandbox
+    ports:
+      - "7474:7474" # HTTP Administration Panel Interface
+      - "7687:7687" # Bolt Functional Connection Protocol
+    environment:
+      NEO4J_AUTH: neo4j/SecureKavachGraph2026_Admin
+      NEO4J_PLUGINS: '["apoc"]'
+      # Memory Constraint Limits tuned for an Intel i5 Architecture
+      NEO4J_server_memory_pagecache_size: 512M
+      NEO4J_server_memory_heap_initial__size: 512M
+      NEO4J_server_memory_heap_max__size: 1G
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    networks:
+      - ksp-secure-network
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p SecureKavachGraph2026_Admin 'RETURN 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # 3. Text Vector Space: Unstructured Case Ingestion & Bilingual RAG Indexing
+  # ---------------------------------------------------------------------------
+  ksp-opensearch:
+    image: opensearchproject/opensearch:2.12.0
+    container_name: ksp-opensearch-sandbox
+    environment:
+      - cluster.name=ksp-kavach-cluster
+      - node.name=ksp-single-node
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx1g" # Strict JVM Tuning for local system resources
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - DISABLE_SECURITY_PLUGIN=true # Handled directly inside our backend network middleware layers
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "9200:9200"
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    networks:
+      - ksp-secure-network
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # 4. Cache Tier: Session Boundary Enforcement & Performance Optimization
+  # ---------------------------------------------------------------------------
+  ksp-redis:
+    image: redis:7-alpine
+    container_name: ksp-redis-sandbox
+    ports:
+      - "6379:6379"
+    networks:
+      - ksp-secure-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
+  neo4j_data:
+    driver: local
+  neo4j_logs:
+    driver: local
+  opensearch_data:
+    driver: local
+
+networks:
+  ksp-secure-network:
+    driver: bridge

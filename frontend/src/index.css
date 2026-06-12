@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================
+   GLOBAL BASE RESET
+   ========================= */
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* =========================
+   GLOBAL BACKGROUND FIX
+   Single source of truth
+   ========================= */
+body {
+  color: #e2e8f0;
+  background-color: #050816;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    /* radial-gradient(circle at 50% 0%, rgba(12, 28, 48, 0.9) 0%, rgba(5, 8, 22, 0.15) 45%, rgba(5, 8, 22, 0) 75%); */
+  /* background-size: 44px 44px, 44px 44px, 100% 100%;
+  background-position: center top;
+  background-repeat: repeat, repeat, no-repeat;
+  background-attachment: fixed, fixed, fixed; */
+}
+/* Make root transparent so body background stays visible everywhere */
+#root {
+  background: transparent;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Better default text rendering */
+@layer base {
+  html,
+  body {
+    @apply text-slate-100 antialiased selection:bg-[#00FFCC]/20;
+  }
+}
+
+/* =========================
+   OPTIONAL MESH CLASSES
+   Use only when needed
+   ========================= */
+.canvas-ambient-mesh {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(139, 92, 246, 0.08) 0%, rgba(139, 92, 246, 0.02) 40%, transparent 70%),
+    radial-gradient(circle at 15% 85%, rgba(0, 255, 204, 0.05) 0%, rgba(0, 255, 204, 0.01) 45%, transparent 70%),
+    transparent;
+}
+
+.canvas-grid-matrix {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 44px 44px;
+  background-position: 0 0;
+  background-repeat: repeat;
+  transform: none;
+  will-change: transform;
+}
+
+/* =========================
+   GLASS PANEL SYSTEM
+   ========================= */
+.glass-panel {
+  background: rgba(8, 12, 22, 0.95) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 204, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
